@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<button id="logout">Cerrar sesión</button> 
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<h2>Panel comunidad</h2>
+
+<button id="logout">Cerrar sesión</button>
+
+<h3>Registrar pago</h3>
+
+<form id="paymentForm">
+
+<input id="concepto" placeholder="Concepto">
+
+<input id="monto" placeholder="Monto">
+
+<button>Guardar pago</button>
+
+</form>
+
+<h3>Subir producto</h3>
+
+<form id="productForm">
+
+<input id="productName" placeholder="Producto">
+
+<input id="price" placeholder="Precio">
+
+<input type="file" id="photo">
+
+<button>Subir</button>
+
+</form>
+
+<script type="module" src="js/products.js"></script>
+<script type="module" src="js/payments.js"></script>
+
+</body>
+
+</html>
