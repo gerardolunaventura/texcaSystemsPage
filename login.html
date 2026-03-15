@@ -1,35 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
 <meta charset="UTF-8">
 <title>Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="auth-page">
 
-<div class="card">
+<main class="app">
+<header class="hero">
+<span class="badge">Comunidad Texca</span>
+<h1>Acceso claro y rapido</h1>
+<p>Ingresa para gestionar pagos y productos en un solo lugar.</p>
+<div class="pill-row">
+<span>Pagos</span>
+<span>Productos</span>
+<span>Recibos</span>
+</div>
+</header>
 
+<section class="card">
 <h2>Acceso</h2>
 
-<form id="loginForm">
-
-<input id="email" type="email" placeholder="Correo">
-
-<input id="password" type="password" placeholder="Contraseña">
-
-<button>Entrar</button>
-
-</form>
-
-<a href="register.html">Crear cuenta</a>
-
-<p id="message"></p>
-
+<form id="loginForm" class="stack">
+<div class="field">
+<label for="email">Correo</label>
+<input id="email" type="email" placeholder="tu@correo.com" required>
 </div>
 
-<script type="module" src="js/auth.js"></script>
+<div class="field">
+<label for="password">Contrasena</label>
+<input id="password" type="password" placeholder="Tu contrasena" required>
+</div>
+
+<button class="primary">Entrar</button>
+</form>
+
+<p class="helper">No tienes cuenta? <a href="register.html">Crear cuenta</a></p>
+<p id="message" class="status"></p>
+</section>
+</main>
+
+<script type="module" src="auth.js"></script>
 
 </body>
 </html>

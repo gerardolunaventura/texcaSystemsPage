@@ -1,5 +1,38 @@
-<h2>Panel administrador</h2>
+<!DOCTYPE html>
+<html lang="es">
 
-<h3>Pagos registrados</h3>
+<head>
+<meta charset="UTF-8">
+<title>Administrador</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
 
-<div id="allPayments"></div>
+<body class="dashboard" data-requires-admin="true">
+
+<main class="app">
+<header class="topbar">
+<div>
+<span class="badge">Comunidad Texca</span>
+<h1>Panel administrador</h1>
+<p class="muted">Consulta los pagos registrados en la comunidad.</p>
+</div>
+<div class="top-actions">
+<span id="roleBadge" class="status small"></span>
+<span id="sessionMessage" class="status small"></span>
+<button id="logout" class="button-ghost">Cerrar sesion</button>
+</div>
+</header>
+
+<section class="card">
+<h2>Pagos registrados</h2>
+<p id="adminStatus" class="status"></p>
+<div id="allPayments" class="list"></div>
+</section>
+</main>
+
+<script type="module" src="session.js"></script>
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>

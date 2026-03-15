@@ -1,50 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
-
 <meta charset="UTF-8">
 <title>Dashboard</title>
-<button id="logout">Cerrar sesión</button> 
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="style.css">
-
 </head>
 
-<body>
+<body class="dashboard">
 
-<h2>Panel comunidad</h2>
+<main class="app">
+<header class="topbar">
+<div>
+<span class="badge">Comunidad Texca</span>
+<h1>Panel de la comunidad</h1>
+<p class="muted">Registra pagos y publica productos con claridad.</p>
+</div>
+<div class="top-actions">
+<span id="roleBadge" class="status small"></span>
+<span id="sessionMessage" class="status small"></span>
+<a id="adminLink" class="button-ghost" href="admin.html" hidden>Panel admin</a>
+<button id="logout" class="button-ghost">Cerrar sesion</button>
+</div>
+</header>
 
-<button id="logout">Cerrar sesión</button>
+<section class="grid">
+<div class="card">
+<h2>Registrar pago</h2>
 
-<h3>Registrar pago</h3>
+<form id="paymentForm" class="stack">
+<div class="field">
+<label for="concepto">Concepto</label>
+<input id="concepto" placeholder="Ej. Mantenimiento" required>
+</div>
 
-<form id="paymentForm">
+<div class="field">
+<label for="monto">Monto</label>
+<input id="monto" type="number" step="0.01" placeholder="0.00" required>
+</div>
 
-<input id="concepto" placeholder="Concepto">
-
-<input id="monto" placeholder="Monto">
-
-<button>Guardar pago</button>
-
+<button class="primary">Guardar pago</button>
 </form>
 
-<h3>Subir producto</h3>
+<p id="paymentStatus" class="status"></p>
+<ul id="paymentsList" class="list"></ul>
+</div>
 
-<form id="productForm">
+<div class="card">
+<h2>Subir producto</h2>
 
-<input id="productName" placeholder="Producto">
+<div data-role="admin">
+<form id="productForm" class="stack">
+<div class="field">
+<label for="productName">Producto</label>
+<input id="productName" placeholder="Nombre del producto" required>
+</div>
 
-<input id="price" placeholder="Precio">
+<div class="field">
+<label for="price">Precio</label>
+<input id="price" type="number" step="0.01" placeholder="0.00" required>
+</div>
 
-<input type="file" id="photo">
+<div class="field">
+<label for="photo">Foto</label>
+<input type="file" id="photo" accept="image/*" required>
+</div>
 
-<button>Subir</button>
-
+<button class="primary">Subir</button>
 </form>
+</div>
 
-<script type="module" src="js/products.js"></script>
-<script type="module" src="js/payments.js"></script>
+<p id="productStatus" class="status"></p>
+<div id="productsList" class="product-grid"></div>
+</div>
+</section>
+</main>
+
+<script type="module" src="session.js"></script>
+<script type="module" src="payments.js"></script>
+<script type="module" src="products.js"></script>
 
 </body>
-
 </html>
