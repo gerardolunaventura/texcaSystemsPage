@@ -88,7 +88,6 @@ list.innerHTML="";
 
 try{
 if(!currentUser){
-setStatus("Sesion no valida. Inicia sesion nuevamente.", "error");
 return;
 }
 
@@ -125,5 +124,3 @@ setStatus("No se pudieron cargar los pagos.", "error");
 }
 
 }
-
-loadPayments();

@@ -35,8 +35,6 @@ form.hidden = true;
 }
 setStatus("Solo administradores pueden subir productos.", "info");
 }
-
-loadProducts();
 };
 
 init();
