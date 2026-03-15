@@ -1,4 +1,4 @@
-import { auth, db } from "./firebase.js";
+import { auth, db, authReady } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -11,6 +11,7 @@ resolve(user);
 });
 
 export const getUserContext = async () => {
+await authReady;
 const user = auth.currentUser ?? (await waitForAuth());
 if(!user){
 return { user: null, role: "guest", profile: null };
