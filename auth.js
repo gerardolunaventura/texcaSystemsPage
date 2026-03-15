@@ -20,6 +20,31 @@ message.textContent = text;
 message.dataset.type = type;
 };
 
+const formatAuthError = (error) => {
+const code = error && error.code ? error.code : "unknown";
+if(code === "auth/email-already-in-use"){
+return "Este correo ya esta registrado.";
+}
+if(code === "auth/invalid-email"){
+return "El correo no es valido.";
+}
+if(code === "auth/weak-password"){
+return "La contrasena debe tener al menos 6 caracteres.";
+}
+if(code === "auth/network-request-failed"){
+return "No hay conexion a internet o esta bloqueada.";
+}
+return `No se pudo crear la cuenta (${code}).`;
+};
+
+const formatProfileError = (error) => {
+const code = error && error.code ? error.code : "unknown";
+if(code === "permission-denied"){
+return "Cuenta creada, pero no pudimos guardar el perfil (reglas de Firestore).";
+}
+return `Cuenta creada, pero fallo el guardado del perfil (${code}).`;
+};
+
 if(registerForm){
 
 registerForm.addEventListener("submit",async(e)=>{
@@ -38,6 +63,7 @@ submitButton.disabled = true;
 try{
 const userCredential = await createUserWithEmailAndPassword(auth,email,password);
 
+try{
 await setDoc(doc(db,"users",userCredential.user.uid),{
 
 name,
@@ -47,10 +73,15 @@ role: "member",
 createdAt: new Date()
 
 });
+}catch(error){
+setStatus(formatProfileError(error), "error");
+submitButton.disabled = false;
+return;
+}
 
 window.location="dashboard.html";
 }catch(error){
-setStatus("No se pudo crear la cuenta. Revisa los datos e intenta de nuevo.", "error");
+setStatus(formatAuthError(error), "error");
 submitButton.disabled = false;
 }
 
@@ -75,7 +106,8 @@ try{
 await signInWithEmailAndPassword(auth,email,password);
 window.location="dashboard.html";
 }catch(error){
-setStatus("Credenciales incorrectas. Intenta de nuevo.", "error");
+const code = error && error.code ? error.code : "unknown";
+setStatus(`No se pudo iniciar sesion (${code}).`, "error");
 submitButton.disabled = false;
 }
 

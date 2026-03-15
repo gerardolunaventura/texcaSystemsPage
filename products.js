@@ -24,17 +24,27 @@ status.textContent = text;
 status.dataset.type = type;
 };
 
-const init = async () => {
+const ensureContext = async (showError = true) => {
 const context = await getUserContext();
 currentUser = context.user;
 currentRole = context.role;
 
-if(currentRole !== "admin"){
+if(!currentUser && showError){
+setStatus("Sesion no valida. Inicia sesion nuevamente.", "error");
+}
+
+return Boolean(currentUser);
+};
+
+const init = async () => {
+const ok = await ensureContext(false);
+if(ok && currentRole !== "admin"){
 if(form){
 form.hidden = true;
 }
 setStatus("Solo administradores pueden subir productos.", "info");
 }
+loadProducts();
 };
 
 init();
@@ -68,9 +78,11 @@ submitButton.disabled = true;
 setStatus("Subiendo producto...", "info");
 
 if(!currentUser){
-setStatus("Sesion no valida. Inicia sesion nuevamente.", "error");
+const ok = await ensureContext(true);
+if(!ok){
 submitButton.disabled = false;
 return;
+}
 }
 
 try{
@@ -90,7 +102,8 @@ setStatus("Producto subido correctamente.", "success");
 form.reset();
 loadProducts();
 }catch(error){
-setStatus("No se pudo subir el producto.", "error");
+const code = error && error.code ? error.code : "unknown";
+setStatus(`No se pudo subir el producto (${code}).`, "error");
 }finally{
 submitButton.disabled = false;
 }
@@ -138,5 +151,3 @@ setStatus("No se pudieron cargar los productos.", "error");
 }
 
 }
-
-loadProducts();

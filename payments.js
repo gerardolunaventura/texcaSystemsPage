@@ -23,12 +23,24 @@ status.textContent = text;
 status.dataset.type = type;
 };
 
-const init = async () => {
+const ensureContext = async (showError = true) => {
 const context = await getUserContext();
 currentUser = context.user;
 currentRole = context.role;
 currentProfile = context.profile;
+
+if(!currentUser && showError){
+setStatus("Sesion no valida. Inicia sesion nuevamente.", "error");
+}
+
+return Boolean(currentUser);
+};
+
+const init = async () => {
+const ok = await ensureContext(false);
+if(ok){
 loadPayments();
+}
 };
 
 init();
@@ -49,8 +61,8 @@ return;
 }
 
 if(!currentUser){
-setStatus("Sesion no valida. Inicia sesion nuevamente.", "error");
-return;
+const ok = await ensureContext(true);
+if(!ok) return;
 }
 
 const submitButton = form.querySelector("button");
@@ -73,7 +85,8 @@ setStatus("Pago guardado correctamente.", "success");
 form.reset();
 loadPayments();
 }catch(error){
-setStatus("No se pudo guardar el pago.", "error");
+const code = error && error.code ? error.code : "unknown";
+setStatus(`No se pudo guardar el pago (${code}).`, "error");
 }finally{
 submitButton.disabled = false;
 }
@@ -87,7 +100,8 @@ if(!list) return;
 list.innerHTML="";
 
 try{
-if(!currentUser){
+const ok = await ensureContext(false);
+if(!ok){
 return;
 }
 
