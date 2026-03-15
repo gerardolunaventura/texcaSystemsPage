@@ -23,6 +23,20 @@ status.textContent = text;
 status.dataset.type = type;
 };
 
+const withTimeout = (promise, ms) =>
+new Promise((resolve, reject) => {
+const timer = setTimeout(() => reject(new Error("timeout")), ms);
+promise
+  .then((value) => {
+    clearTimeout(timer);
+    resolve(value);
+  })
+  .catch((error) => {
+    clearTimeout(timer);
+    reject(error);
+  });
+});
+
 const ensureContext = async (showError = true) => {
 const context = await getUserContext();
 currentUser = context.user;
@@ -70,7 +84,7 @@ submitButton.disabled = true;
 setStatus("Guardando pago...", "info");
 
 try{
-await addDoc(collection(db,"payments"),{
+await withTimeout(addDoc(collection(db,"payments"),{
 
 concepto,
 monto,
@@ -79,14 +93,18 @@ userEmail: currentUser.email || "",
 createdBy: currentProfile && currentProfile.name ? currentProfile.name : "Usuario",
 fecha:new Date()
 
-});
+}), 10000);
 
 setStatus("Pago guardado correctamente.", "success");
 form.reset();
 loadPayments();
 }catch(error){
+if(error && error.message === "timeout"){
+setStatus("La solicitud esta tardando. Revisa tu conexion o bloqueadores.", "error");
+}else{
 const code = error && error.code ? error.code : "unknown";
 setStatus(`No se pudo guardar el pago (${code}).`, "error");
+}
 }finally{
 submitButton.disabled = false;
 }
