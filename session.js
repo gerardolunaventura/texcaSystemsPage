@@ -1,4 +1,4 @@
-import { auth } from "./firebase.js?v=6";
+import { auth } from "./firebase.js?v=7";
 import { getUserContext } from "./user-state.js";
 import { onAuthStateChanged } from 
 "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";

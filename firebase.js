@@ -33,4 +33,6 @@ const authReady = setPersistence(auth, browserLocalPersistence)
   .catch(() => setPersistence(auth, browserSessionPersistence))
   .catch(() => setPersistence(auth, inMemoryPersistence));
 
-export { app, auth, db, storage, authReady };
+const projectId = firebaseConfig.projectId;
+
+export { app, auth, db, storage, authReady, projectId };

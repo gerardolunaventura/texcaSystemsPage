@@ -1,4 +1,4 @@
-import { db, storage } from "./firebase.js?v=6";
+import { db, storage } from "./firebase.js?v=7";
 import { getUserContext } from "./user-state.js";
 
 import {

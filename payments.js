@@ -1,4 +1,4 @@
-import { db } from "./firebase.js?v=6";
+import { db, projectId } from "./firebase.js?v=7";
 import { getUserContext } from "./user-state.js";
 
 import {
@@ -36,6 +36,38 @@ promise
     reject(error);
   });
 });
+
+const addPaymentViaRest = async (paymentData) => {
+const token = await currentUser.getIdToken(true);
+const payload = {
+  fields: {
+    concepto: { stringValue: paymentData.concepto },
+    monto: { doubleValue: paymentData.monto },
+    uid: { stringValue: paymentData.uid },
+    userEmail: { stringValue: paymentData.userEmail },
+    createdBy: { stringValue: paymentData.createdBy },
+    fecha: { timestampValue: paymentData.fecha.toISOString() }
+  }
+};
+
+const response = await fetch(
+  `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/payments`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  }
+);
+
+if(!response.ok){
+const body = await response.json().catch(() => ({}));
+const message = body.error && body.error.message ? body.error.message : `http_${response.status}`;
+throw new Error(message);
+}
+};
 
 const ensureContext = async (showError = true) => {
 const context = await getUserContext();
@@ -83,24 +115,32 @@ const submitButton = form.querySelector("button");
 submitButton.disabled = true;
 setStatus("Guardando pago...", "info");
 
-try{
-await withTimeout(addDoc(collection(db,"payments"),{
-
+const paymentData = {
 concepto,
 monto,
 uid: currentUser.uid,
 userEmail: currentUser.email || "",
 createdBy: currentProfile && currentProfile.name ? currentProfile.name : "Usuario",
-fecha:new Date()
+fecha: new Date()
+};
 
-}), 10000);
+try{
+await withTimeout(addDoc(collection(db,"payments"), paymentData), 10000);
 
 setStatus("Pago guardado correctamente.", "success");
 form.reset();
 loadPayments();
 }catch(error){
 if(error && error.message === "timeout"){
-setStatus("La solicitud esta tardando. Revisa tu conexion o bloqueadores.", "error");
+try{
+await addPaymentViaRest(paymentData);
+setStatus("Pago guardado correctamente.", "success");
+form.reset();
+loadPayments();
+}catch(restError){
+const message = restError && restError.message ? restError.message : "unknown";
+setStatus(`No se pudo guardar el pago (${message}).`, "error");
+}
 }else{
 const code = error && error.code ? error.code : "unknown";
 setStatus(`No se pudo guardar el pago (${code}).`, "error");
